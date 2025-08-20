@@ -1,4 +1,4 @@
-const API_PRODUTO = "https://dj-pautorrado00.onrender.com/padaria"; // Troque para a URL do Render depois
+const API_PRODUTO = "https://padarao.onrender.com/padaria"; // Troque para a URL do Render depois
 
 // CADASTRAR PRODUTO
 document.getElementById("formProduto").addEventListener("submit", async function (e) {

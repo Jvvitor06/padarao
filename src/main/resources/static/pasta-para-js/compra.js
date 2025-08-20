@@ -1,6 +1,6 @@
-const API_USUARIO = "https://dj-pautorrado00.onrender.com/usuario";
-const API_PRODUTO = "https://dj-pautorrado00.onrender.com/padaria";
-const API_COMPRA  = "https://dj-pautorrado00.onrender.com/compra";
+const API_USUARIO = "https://padarao.onrender.com/usuario";
+const API_PRODUTO = "https://padarao.onrender.com/padaria";
+const API_COMPRA  = "https://padarao.onrender.com/compra";
 
 let usuariosCache = [];
 let produtosCache = [];

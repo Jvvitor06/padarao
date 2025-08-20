@@ -1,4 +1,4 @@
-const API_USUARIO = "https://dj-pautorrado00.onrender.com/usuario"; // Troque para a URL do Render depois
+const API_USUARIO = "https://padarao.onrender.com/usuario"; // Troque para a URL do Render depois
 
 // CADASTRAR USUÁRIO
 document.getElementById("formUsuario").addEventListener("submit", async function (e) {
