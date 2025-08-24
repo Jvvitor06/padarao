@@ -6,4 +6,4 @@ INSERT INTO padaria (id, nome, preco) VALUES (5, 'Sonho', 3.00);
 INSERT INTO padaria (id, nome, preco) VALUES (6, 'Pão Integral', 1.00);
 INSERT INTO padaria (id, nome, preco) VALUES (7, 'Ciabatta', 2.50);
 INSERT INTO padaria (id, nome, preco) VALUES (8, 'Rosca Doce', 1.80);
-INSERT INTO padaria (id,nome,preco) VALUES (9, 'Pastel', 17.50); 
+
