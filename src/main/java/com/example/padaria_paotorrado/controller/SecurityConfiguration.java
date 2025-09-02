@@ -12,7 +12,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity()
 public class SecurityConfiguration {
     private final UserRepository repository;
     public SecurityConfiguration(UserRepository repository) {
@@ -25,14 +25,10 @@ public class SecurityConfiguration {
             AuthenticationConfiguration authenticationConfiguration
     )throws Exception {return authenticationConfiguration.getAuthenticationManager();}
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
-                .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/cadastros/**").permitAll()
-                        .requestMatchers("/produtos/**").permitAll() // exemplo: liberando produtos
-                        .anyRequest().authenticated()
+                .authorizeHttpRequests(authz -> authz
+                        .anyRequest().permitAll() // Permite acesso a todas as requisições
                 );
         return http.build();
     }
