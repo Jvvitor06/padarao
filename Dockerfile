@@ -4,7 +4,7 @@
 FROM maven:3.8.5-openjdk-17 AS builder
 WORKDIR /app
 
-# Copia pom e código-fonte
+# Copia pom.xml e o código-fonte
 COPY pom.xml .
 COPY src ./src
 
@@ -17,19 +17,15 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
-# Copia o JAR gerado na etapa anterior
+# Copia o JAR gerado na etapa de build
 COPY --from=builder /app/target/*.jar app.jar
 
-# Define a porta que o Render vai expor
-ENV PORT=8080
+# Render define a variável PORT em tempo de execução
 EXPOSE 8080
 
-# Variável para Spring Boot usar a porta dinâmica do Render
-ENV SERVER_PORT=${PORT}
-
-# Habilita UTF-8 e perfil padrão
+# Configuração de ambiente
 ENV LANG=C.UTF-8
 ENV SPRING_PROFILES_ACTIVE=default
 
-# Comando para iniciar o app
+# Inicia a aplicação Spring Boot
 ENTRYPOINT ["java", "-jar", "app.jar"]
