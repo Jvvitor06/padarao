@@ -3,6 +3,7 @@ package com.example.padaria_paotorrado.Business;
 import com.example.padaria_paotorrado.infrastructure.entitys.User;
 import com.example.padaria_paotorrado.infrastructure.repository.UserRepository;
 import com.example.padaria_paotorrado.infrastructure.repository.role.UserRole;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -32,7 +33,8 @@ public class AuthorizationService {
         repository.save(newUser);
     }
     public User findByLogin(String login) {
-        return repository.findByUsername(login);
+        return repository.findByUsername(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + login));
     }
 
 }
