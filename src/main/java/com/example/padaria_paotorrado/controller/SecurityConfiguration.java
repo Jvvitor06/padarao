@@ -31,10 +31,11 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/cadastros/**").permitAll()
-                        .requestMatchers("/", "/index", "/home").permitAll()
+                        .requestMatchers("/produtos/**").permitAll() // exemplo: liberando produtos
                         .anyRequest().authenticated()
                 );
         return http.build();
     }
+
 
 }
