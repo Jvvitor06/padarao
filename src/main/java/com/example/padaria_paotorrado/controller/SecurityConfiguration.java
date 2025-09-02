@@ -31,8 +31,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/cadastros/**").permitAll()
+                        .requestMatchers("/", "/index", "/home").permitAll()
                         .anyRequest().authenticated()
                 );
         return http.build();
     }
+
 }
