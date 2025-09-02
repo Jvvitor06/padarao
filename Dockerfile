@@ -21,11 +21,11 @@ WORKDIR /app
 COPY --from=builder /app/target/*.jar app.jar
 
 # Render define a variável PORT em tempo de execução
-EXPOSE 8080
+EXPOSE ${PORT}
 
 # Configuração de ambiente
 ENV LANG=C.UTF-8
 ENV SPRING_PROFILES_ACTIVE=default
 
-# Inicia a aplicação Spring Boot
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# Inicia a aplicação Spring Boot na porta do Render
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
