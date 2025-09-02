@@ -13,6 +13,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration {
@@ -46,20 +48,16 @@ public class SecurityConfiguration {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // 🔥 corrigido
+                .csrf(csrf -> csrf.disable()) // 🔒 desabilita CSRF (bom pra API REST)
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register").permitAll()
-                        .requestMatchers("/produtos/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+                        .requestMatchers("/login", "/register").permitAll() // libera login e cadastro
+                        .anyRequest().authenticated() // o resto precisa estar logado
                 )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll()
-                )
-                .logout(logout -> logout.permitAll());
+                .httpBasic(withDefaults()); // ✅ habilita login HTTP Basic
 
         return http.build();
     }
+
+
 
 }
