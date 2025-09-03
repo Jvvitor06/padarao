@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Registrar Usuário</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background: #f3f3f3;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        #resposta {
+            margin-top: 10px;
+            font-size: 14px;
+            color: #333;
+            word-wrap: break-word;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Registrar Usuário</h2>
+    <input id="login" placeholder="Usuário">
+    <input id="senha" type="password" placeholder="Senha">
+    <select id="role">
+        <option value="USER">USER</option>
+        <option value="ADMIN">ADMIN</option>
+    </select>
+    <button onclick="registrar()">Cadastrar</button>
+    <div id="resposta"></div>
+</div>
+
+<script>
+    async function registrar() {
+        const login = document.getElementById("login").value;
+        const senha = document.getElementById("senha").value;
+        const role = document.getElementById("role").value;
+
+        // ✅ já ajustado para sua URL no Render
+        const API_URL = "https://padarao-1.onrender.com";
+
+        try {
+            const resposta = await fetch(API_URL + "/auth/register", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ login, password: senha, role })
+            });
+
+            const texto = await resposta.text();
+            document.getElementById("resposta").innerText =
+                `Resposta: ${resposta.status} — ${texto}`;
+        } catch (e) {
+            document.getElementById("resposta").innerText =
+                "Erro ao conectar com a API: " + e;
+        }
+    }
+</script>
+</body>
+</html>

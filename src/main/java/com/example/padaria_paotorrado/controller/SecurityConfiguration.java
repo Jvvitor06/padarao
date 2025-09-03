@@ -25,6 +25,7 @@ public class SecurityConfiguration {
         this.userRepository = userRepository;
     }
 
+    // 🔹 Carrega usuários do banco
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> userRepository.findByUsername(username)
@@ -41,6 +42,7 @@ public class SecurityConfiguration {
         return config.getAuthenticationManager();
     }
 
+    // 🔹 Regras de segurança
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
