@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -25,11 +26,16 @@ public class SecurityConfiguration {
         this.repository = repository;
     }
 
-    // 🔹 Pega usuário do banco
+    // 🔹 Usuário fixo em memória (admin / 1234)
     @Bean
-    public UserDetailsService userDetailsService() {
-        return username -> repository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
+    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
+        var user = org.springframework.security.core.userdetails.User.builder()
+                .username("admin")
+                .password(encoder.encode("1234"))
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user);
     }
 
     @Bean
@@ -57,7 +63,4 @@ public class SecurityConfiguration {
 
         return http.build();
     }
-
-
-
 }
