@@ -11,7 +11,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -20,22 +19,16 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfiguration {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
 
-    public SecurityConfiguration(UserRepository repository) {
-        this.repository = repository;
+    public SecurityConfiguration(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
-    // 🔹 Usuário fixo em memória (admin / 1234)
     @Bean
-    public UserDetailsService userDetailsService(PasswordEncoder encoder) {
-        var user = org.springframework.security.core.userdetails.User.builder()
-                .username("admin")
-                .password(encoder.encode("1234"))
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user);
+    public UserDetailsService userDetailsService() {
+        return username -> userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + username));
     }
 
     @Bean
@@ -44,22 +37,23 @@ public class SecurityConfiguration {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(
-            AuthenticationConfiguration authenticationConfiguration
-    ) throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
-    // 🔹 Regras de segurança
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf(csrf -> csrf.disable()) // 🔒 desabilita CSRF (bom pra API REST)
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/login", "/register").permitAll() // libera login e cadastro
-                        .anyRequest().authenticated() // o resto precisa estar logado
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/h2-console/**")
+                        .disable()
                 )
-                .httpBasic(withDefaults()); // ✅ habilita login HTTP Basic
+                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
+                .authorizeHttpRequests(authz -> authz
+                        .requestMatchers("/auth/**", "/login", "/register", "/h2-console/**").permitAll()
+                        .anyRequest().authenticated()
+                )
+                .httpBasic(withDefaults());
 
         return http.build();
     }
