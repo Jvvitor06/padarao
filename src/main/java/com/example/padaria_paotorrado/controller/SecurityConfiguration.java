@@ -43,20 +43,5 @@ public class SecurityConfiguration {
     }
 
     // 🔹 Regras de segurança
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(csrf -> csrf
-                        .ignoringRequestMatchers("/h2-console/**")
-                        .disable()
-                )
-                .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()))
-                .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/auth/**", "/login", "/register", "/h2-console/**").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .httpBasic(withDefaults());
 
-        return http.build();
-    }
 }
