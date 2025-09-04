@@ -1,31 +1,11 @@
-# ------------------------------
-# Etapa 1: Build da aplicação com Maven
-# ------------------------------
-FROM maven:3.8.5-openjdk-17 AS builder
+FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
+COPY . .
+RUN ./mvnw clean package -DskipTests
 
-# Copia pom.xml e o código-fonte
-COPY pom.xml .
-COPY src ./src
-
-# Build do projeto sem executar testes
-RUN mvn clean package -DskipTests
-
-# ------------------------------
-# Etapa 2: Imagem final para rodar o JAR
-# ------------------------------
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:17-jre
 WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 
-# Copia o JAR gerado na etapa de build
-COPY --from=builder /app/target/*.jar app.jar
-
-# Render define a variável PORT em tempo de execução
-EXPOSE ${PORT}
-
-# Configuração de ambiente
-ENV LANG=C.UTF-8
-ENV SPRING_PROFILES_ACTIVE=default
-
-# Inicia a aplicação Spring Boot na porta do Render
-ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=$PORT"]
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","app.jar"]
