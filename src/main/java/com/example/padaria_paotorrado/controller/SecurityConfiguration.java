@@ -48,23 +48,41 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
-                .headers(h -> h.frameOptions(f -> f.sameOrigin())) // H2
+                .headers(h -> h.frameOptions(f -> f.sameOrigin())) // H2 console
                 .authorizeHttpRequests(auth -> auth
+                        // Arquivos estáticos e páginas públicas
+                        .requestMatchers("/", "/index.html", "/login.html", "/usuario.html",
+                                "/padaria.html", "/compra.html", "/css/**", "/pasta-para-js/**",
+                                "/**/*.png", "/**/*.jpg", "/**/*.jpeg", "/**/*.gif").permitAll()
+
+                        // H2 console
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers("/auth/login").permitAll() // se tiver endpoint de login próprio
-                        // Só ADMIN pode cadastrar usuário pela API:
+
+                        // API de login (se usar endpoint próprio)
+                        .requestMatchers("/auth/login").permitAll()
+
+                        // Só ADMIN pode cadastrar usuário via API
                         .requestMatchers(HttpMethod.POST, "/auth/register").hasRole("ADMIN")
+
+                        // Todo o resto precisa de autenticação
                         .anyRequest().authenticated()
                 )
-                // Habilita login por formulário (seu HTML postando em /login):
+                // Login via formulário customizado
                 .formLogin(form -> form
-                        .loginProcessingUrl("/login")
-                        .usernameParameter("username")
-                        .passwordParameter("password")
+                        .loginPage("/login.html")           // página de login customizada
+                        .loginProcessingUrl("/login")       // endpoint que processa POST
+                        .usernameParameter("username")      // campo esperado no form
+                        .passwordParameter("password")      // campo esperado no form
+                        .defaultSuccessUrl("/index.html", true) // redireciona após login
                         .permitAll()
                 )
-                .logout(l -> l.logoutUrl("/logout").permitAll());
+                // Logout
+                .logout(l -> l
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/index.html")
+                        .permitAll()
+                );
 
         return http.build();
-        }
     }
+}

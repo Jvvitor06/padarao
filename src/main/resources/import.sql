@@ -1,7 +1,6 @@
 -- Usuário admin inicial
-INSERT INTO users (username, password, role)
-VALUES ('jv', '$2a$10$Dow1HjOTUdWu08gH3y3cDeKmbM0YlT4WxyaWQIzHfUCLXK7IBbF72
-', 'ADMIN');
+INSERT INTO users (username, password, role, enabled)
+VALUES ('jv', '$2a$10$Dow1HjOTUdWu08gH3y3cDeKmbM0YlT4WxyaWQIzHfUCLXK7IBbF72', 'ADMIN', true);
 -- senha = 1234 (BCrypt)
 
 -- Produtos da padaria
