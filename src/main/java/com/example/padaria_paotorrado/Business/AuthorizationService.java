@@ -15,23 +15,22 @@ public class AuthorizationService {
         this.repository = repository;
     }
     public boolean userExists(String login) {
-        return repository.findByUsername(login) !=null;
+        return repository.findByUsername(login).isPresent(); // <-- em vez de != null
     }
+
     public void registerUser(String login, String password, String roleStr) {
         if (userExists(login)) {
             throw new RuntimeException("Usuario ja existe");
         }
         String encryptedPassword = new BCryptPasswordEncoder().encode(password);
-        UserRole roleEnum;
 
-        try {
-            roleEnum = UserRole.valueOf(roleStr.toUpperCase());
-        }catch (IllegalArgumentException e)  {
-            throw new RuntimeException("Role invalido! use adm ou user");
-        }
+        // Se quiser aceitar "admin" ou "user" independente de maiúsculas:
+        UserRole roleEnum = UserRole.fromValue(roleStr); // usa seu @JsonCreator
+
         User newUser = new User(login, encryptedPassword, roleEnum);
         repository.save(newUser);
     }
+
     public User findByLogin(String login) {
         return repository.findByUsername(login)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + login));

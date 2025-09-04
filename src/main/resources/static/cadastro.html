@@ -63,7 +63,7 @@
         const senha = document.getElementById("senha").value;
         const role = document.getElementById("role").value;
 
-        // 🔗 URL da sua API no Render
+        // sua API no Render
         const API_URL = "https://padarao-1.onrender.com";
 
         try {
@@ -75,7 +75,7 @@
 
             const texto = await resposta.text();
             document.getElementById("resposta").innerText =
-                `Status: ${resposta.status} — ${texto}`;
+                `Resposta: ${resposta.status} — ${texto}`;
         } catch (e) {
             document.getElementById("resposta").innerText =
                 "Erro ao conectar com a API: " + e;

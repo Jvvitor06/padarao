@@ -39,8 +39,7 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // ✅ corrigido (antes estava role.name)
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -67,5 +66,6 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
  }
+
 
 }
