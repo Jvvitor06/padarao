@@ -20,8 +20,8 @@ WORKDIR /app
 # Copia o JAR gerado na etapa de build
 COPY --from=builder /app/target/*.jar app.jar
 
-# Render define a variável PORT em tempo de execução
-EXPOSE ${PORT}
+# Render expõe a porta via variável $PORT
+EXPOSE 8080
 
 # Configuração de ambiente
 ENV LANG=C.UTF-8
